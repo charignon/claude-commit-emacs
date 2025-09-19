@@ -175,6 +175,10 @@ Larger diffs will be truncated to prevent API limits."
 (defun claude-commit--clean-commit-message (msg)
   "Clean up commit message MSG by removing quotes and formatting."
   (setq msg (string-trim msg))
+  ;; Remove ANSI escape sequences and terminal control codes
+  (setq msg (replace-regexp-in-string "\033\\[[0-9;]*[a-zA-Z]" "" msg))
+  (setq msg (replace-regexp-in-string "\\[\\?[0-9]+[a-z]" "" msg))
+  ;; Remove quotes and formatting
   (setq msg (replace-regexp-in-string "^[\"'`]" "" msg))
   (setq msg (replace-regexp-in-string "[\"'`]$" "" msg))
   (setq msg (replace-regexp-in-string "^\\*\\*.*:\\*\\* " "" msg))
