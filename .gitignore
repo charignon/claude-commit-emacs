@@ -1,0 +1,30 @@
+# Emacs
+*~
+*.elc
+.#*
+\#*#
+auto-save-list
+tramp
+.emacs.d/
+.cask/
+dist/
+*.tar
+
+# Testing
+test-reports/
+coverage/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Dependencies
+node_modules/
+
+# Build artifacts
+*.tar.gz
+*.zip
