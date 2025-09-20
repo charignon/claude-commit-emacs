@@ -175,13 +175,21 @@ Larger diffs will be truncated to prevent API limits."
 (defun claude-commit--clean-commit-message (msg)
   "Clean up commit message MSG by removing quotes and formatting."
   (setq msg (string-trim msg))
-  ;; Remove ANSI escape sequences and terminal control codes
-  (setq msg (replace-regexp-in-string "\033\\[[0-9;]*[a-zA-Z]" "" msg))
-  (setq msg (replace-regexp-in-string "\\[\\?[0-9]+[a-z]" "" msg))
+  ;; Remove bracketed paste mode sequences ([?2004l and [?2004h)
+  (setq msg (replace-regexp-in-string "\\[\\?2004[lh]" "" msg))
+  ;; Remove all terminal control sequences (CSI sequences)
+  (setq msg (replace-regexp-in-string "\033\\[[0-9;?]*[a-zA-Z]" "" msg))
+  (setq msg (replace-regexp-in-string "\\[[0-9;?]*[a-zA-Z]" "" msg))
+  ;; Remove other escape sequences
+  (setq msg (replace-regexp-in-string "\033\\][0-9];[^\007]*\007" "" msg))
+  ;; Remove any remaining escape characters
+  (setq msg (replace-regexp-in-string "\033" "" msg))
   ;; Remove quotes and formatting
   (setq msg (replace-regexp-in-string "^[\"'`]" "" msg))
   (setq msg (replace-regexp-in-string "[\"'`]$" "" msg))
   (setq msg (replace-regexp-in-string "^\\*\\*.*:\\*\\* " "" msg))
+  ;; Final cleanup of any remaining control characters
+  (setq msg (replace-regexp-in-string "[[:cntrl:]]" "" msg))
   msg)
 
 (defun claude-commit--refresh-magit ()
